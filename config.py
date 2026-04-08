@@ -46,12 +46,24 @@ GOST_LINE_SPACING = 1.5
 GOST_FONT_SIZE = 14
 GOST_FONT_NAME = "Times New Roman"
 
+# === LLM BACKEND SELECTION ===
+LLM_BACKEND_TYPE = "ollama"  # "ollama" или "llamacpp"
+
 # === OLLAMA НАСТРОЙКИ ===
 OLLAMA_HOST = "127.0.0.1"
 OLLAMA_PORT = 11434
 OLLAMA_TIMEOUT = 300  # секунды
 OLLAMA_RETRY_COUNT = 3
 OLLAMA_RETRY_DELAY = 2  # секунды между попытками
+
+# === LLAMA.CPP НАСТРОЙКИ ===
+LLAMACPP_INSTANCES = [
+    ("127.0.0.1", 8000),  # Primary instance
+    # ("127.0.0.1", 8001),  # Additional instances for load balancing
+]
+LLAMACPP_TIMEOUT = 600  # секунды
+LLAMACPP_RETRY_COUNT = 3
+LLAMACPP_RETRY_DELAY = 2
 
 # === MODEL ROUTING V1 (Writer/Compressor) ===
 MODEL_ROUTING_V1 = {
@@ -113,6 +125,20 @@ FIGURE_MARKER = "[FIGURE:"
 FIGURE_MARKER_CLOSE = "]"
 TABLE_MARKER = "[TABLE:"
 TABLE_MARKER_CLOSE = "]"
+
+# === WORKER ARCHITECTURE ===
+WORKER_ENABLED = False  # Включить distributed worker system
+WORKER_COORDINATOR_PORT = 9500
+WORKERS = [
+    # {"name": "writer_1", "host": "127.0.0.1", "port": 9501, "models": ["qwen-course"]},
+    # {"name": "critic_1", "host": "127.0.0.1", "port": 9502, "models": ["deepseek-course"]},
+    # {"name": "remote_worker", "host": "192.168.1.100", "port": 9503, "models": ["qwen-course", "deepseek-course"]},
+]
+WORKER_FALLBACK_TO_LOCAL = True  # Fallback to local backend if workers unavailable
+
+# === CHAPTER PARALLELISM ===
+MAX_CONCURRENT_CHAPTERS = 2  # Максимум параллельных глав одновременно
+CHAPTER_VALIDATION_ENABLED = True  # Проверка глав сразу после генерации
 
 # === LOGGING ===
 LOG_LEVEL = "INFO"

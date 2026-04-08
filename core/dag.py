@@ -8,7 +8,7 @@ import logging
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Set
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 from collections import defaultdict
 
 logger = logging.getLogger(__name__)
@@ -504,7 +504,8 @@ async def node_llm_planning(ctx: Dict, deps: Dict) -> Dict:
     else:
         # Fallback на LLM Planner
         logger.info("Структура не найдена в task.json, вызов LLM Planner")
-        gateway = OllamaGateway()
+        from llm import create_gateway
+        gateway = create_gateway()
         planner = Planner(gateway)
         plan = await planner.plan(calc_trace, task_data)
     
@@ -517,7 +518,7 @@ async def node_text_engine(ctx: Dict, deps: Dict) -> Dict:
     import aiohttp
     from pipeline.writer import Writer
     from pipeline.critic import Critic
-    from llm.gateway import OllamaGateway
+    from llm import create_gateway
     from retrieval.reference_retriever import ReferenceRetriever
     from config import FAISS_INDEX_PATH, CHUNKS_DB_PATH
     
@@ -556,10 +557,10 @@ async def node_text_engine(ctx: Dict, deps: Dict) -> Dict:
     # Задержка 10 секунд для полной выгрузки
     logger.info("Ожидание 10 секунд для полной выгрузки модели из RAM...")
     await asyncio.sleep(10)
-    
+
     # Прогрев qwen-course - загружаем модель в память тестовым запросом
     logger.info("Прогрев qwen-course (загрузка модели в RAM, может занять 3-5 минут)...")
-    gateway = OllamaGateway()
+    gateway = create_gateway()
     try:
         warmup_response = await gateway.chat(
             model="qwen-course",
@@ -573,51 +574,88 @@ async def node_text_engine(ctx: Dict, deps: Dict) -> Dict:
     
     writer = Writer(gateway)
     critic = Critic(gateway)
-    
+
     chapters_text = {}
-    
-    for chapter in plan.get("chapters", []):
-        chapter_idx = str(chapter.get("idx", 0))  # Приводим к str для единообразия
-        chapter_text_parts = []
-        
-        # Если глава имеет секции — генерируем каждую секцию
-        sections = chapter.get("sections", [])
-        if sections:
-            for section in sections:
-                # Writer генерирует текст
-                section_text = await writer.write_section(section, calc_trace)
-                chapter_text_parts.append(section_text)
-        else:
-            # Если секций нет (введение/заключение) — генерируем всю главу целиком
-            # Создаём "псевдо-секцию" из данных главы
-            pseudo_section = {
-                "idx": chapter_idx,
-                "title": chapter.get("title", ""),
-                "content_type": chapter.get("content_type", "LLM_THEORY"),
-                "llm_task": chapter.get("llm_task", ""),
-                "calc_vars": [],
-                "notes": f"Напиши полный текст раздела '{chapter.get('title', '')}'"
-            }
-            chapter_text = await writer.write_section(pseudo_section, calc_trace)
-            chapter_text_parts.append(chapter_text)
-        
-        chapter_text = "\n\n".join(chapter_text_parts)
-        
-        # Critic проверяет
-        critique_result = await critic.critique(chapter_idx, chapter_text, calc_trace)
-        
-        # Если нужна перезапись и score < 0.8
-        if not critique_result.get("skip_rewrite", False):
-            rewrite_sections = critique_result.get("rewrite_sections", [])
-            # TODO: перезапись секций
-            logger.warning(f"Глава {chapter_idx} требует перезаписи: {rewrite_sections}")
-        
-        chapters_text[chapter_idx] = {
-            "text": chapter_text,
-            "title": chapter.get("title", f"Глава {chapter_idx}"),
-            "critique": critique_result
-        }
-    
+
+    # Setup chapter parallelism with semaphore
+    from config import MAX_CONCURRENT_CHAPTERS, CHAPTER_VALIDATION_ENABLED
+    from validation.chapter_validator import ChapterValidator
+
+    max_concurrent = MAX_CONCURRENT_CHAPTERS
+    semaphore = asyncio.Semaphore(max_concurrent)
+
+    validator = ChapterValidator(calc_trace) if CHAPTER_VALIDATION_ENABLED else None
+
+    async def process_chapter(chapter: Dict) -> Tuple[str, Dict]:
+        """Process a single chapter with validation."""
+        async with semaphore:
+            chapter_idx = str(chapter.get("idx", 0))
+            logger.info(f"Processing chapter {chapter_idx}...")
+
+            chapter_text_parts = []
+
+            # Если глава имеет секции — генерируем каждую секцию
+            sections = chapter.get("sections", [])
+            if sections:
+                for section in sections:
+                    # Writer генерирует текст
+                    section_text = await writer.write_section(section, calc_trace)
+                    chapter_text_parts.append(section_text)
+            else:
+                # Если секций нет (введение/заключение) — генерируем всю главу целиком
+                pseudo_section = {
+                    "idx": chapter_idx,
+                    "title": chapter.get("title", ""),
+                    "content_type": chapter.get("content_type", "LLM_THEORY"),
+                    "llm_task": chapter.get("llm_task", ""),
+                    "calc_vars": [],
+                    "notes": f"Напиши полный текст раздела '{chapter.get('title', '')}'"
+                }
+                chapter_text = await writer.write_section(pseudo_section, calc_trace)
+                chapter_text_parts.append(chapter_text)
+
+            full_chapter_text = "\n\n".join(chapter_text_parts)
+
+            # Critic проверяет
+            critique_result = await critic.critique(chapter_idx, full_chapter_text, calc_trace)
+
+            # Immediate validation after generation
+            validation_result = None
+            if validator:
+                validation_result = await validator.validate(full_chapter_text, int(chapter_idx) if chapter_idx.isdigit() else 0)
+
+                # Handle validation failures
+                if validation_result.get("verdict") == "FAIL":
+                    logger.warning(f"Chapter {chapter_idx} validation failed: {validation_result.get('issues_summary')}")
+                    # Can trigger automatic rewrite here if desired
+
+            # Если критик требует перезаписи и score < 0.8
+            if not critique_result.get("skip_rewrite", False):
+                rewrite_sections = critique_result.get("rewrite_sections", [])
+                logger.warning(f"Chapter {chapter_idx} requires rewrite: {rewrite_sections}")
+
+            logger.info(f"Chapter {chapter_idx} completed")
+
+            return (chapter_idx, {
+                "text": full_chapter_text,
+                "title": chapter.get("title", f"Глава {chapter_idx}"),
+                "critique": critique_result,
+                "validation": validation_result
+            })
+
+    # Process all chapters in parallel with semaphore limit
+    chapter_tasks = [process_chapter(chapter) for chapter in plan.get("chapters", [])]
+    chapter_results = await asyncio.gather(*chapter_tasks, return_exceptions=True)
+
+    # Handle results
+    for result in chapter_results:
+        if isinstance(result, Exception):
+            logger.error(f"Chapter processing error: {result}")
+            raise result
+
+        chapter_idx, chapter_data = result
+        chapters_text[chapter_idx] = chapter_data
+
     return {"chapters": chapters_text}
 
 
@@ -779,7 +817,7 @@ async def node_smart_critic(ctx: Dict, deps: Dict) -> Dict:
     """Финальная критическая проверка через LLM."""
     from pipeline.smart_critic import SmartCritic
     from retrieval.reference_retriever import ReferenceRetriever
-    from llm.gateway import OllamaGateway
+    from llm import create_gateway
     from config import FAISS_INDEX_PATH, CHUNKS_DB_PATH, LOG_DIR
     import json
     from pathlib import Path
@@ -813,7 +851,7 @@ async def node_smart_critic(ctx: Dict, deps: Dict) -> Dict:
         })
     
     # Создаём Smart Critic
-    gateway = OllamaGateway()
+    gateway = create_gateway()
     critic = SmartCritic(gateway, retriever)
     
     # Полный анализ
