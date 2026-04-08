@@ -4,12 +4,35 @@
 
 ---
 
+## ✅ Model Consolidation Architecture
+
+**ВАЖНО:** Workers НЕ имеют локальных моделей. Они используют модели из HOST машины.
+
+```
+HOST (модели + основной процесс)          ← Модели здесь (20-50GB)
+  └─ Ollama/llama.cpp (с моделями на :11434 или :8000)
+
+WORKER 1 (только воркер)                   ← БЕЗ моделей (~100MB)
+  └─ Worker сервер (:9501) → обращается к HOST backend'у через HTTP
+
+WORKER 2 (только воркер)                   ← БЕЗ моделей (~100MB)
+  └─ Worker сервер (:9502) → обращается к HOST backend'у через HTTP
+```
+
+**Преимущества:**
+- ✅ Модели хранятся только на HOST машине (экономия дискапространства)
+- ✅ Workers легкие: только Python вериф (~100MB vs 20-50GB на HOST)
+- ✅ Легко добавлять новых worker'ов без загрузки моделей
+- ✅ Легко обновлять модели: одно место вместо N worker'ов
+
+---
+
 ## Содержание
 
 1. [Системные требования](#системные-требования)
 2. [Шаг 1: Установка Tailscale](#шаг-1-установка-tailscale)
 3. [Шаг 2: Установка зависимостей](#шаг-2-установка-зависимостей)
-4. [Шаг 3: Установка LLM Backend](#шаг-3-установка-llm-backend)
+4. [Шаг 3: Настройка HOST Backend URL](#шаг-3-настройка-host-backend-url)
 5. [Шаг 4: Запуск Worker'а](#шаг-4-запуск-worker)
 6. [Шаг 5: Подключение к HOST](#шаг-5-подключение-к-host)
 7. [Шаг 6: Мониторинг Worker'а](#шаг-6-мониторинг-worker)
@@ -19,12 +42,14 @@
 
 ## Системные требования
 
-### Железо:
-- **CPU:** Intel/AMD с 2+ ядрами (минимум)
-- **RAM:** 8GB+ (для моделей 7B, 4GB минимум для 3B моделей)
-- **GPU:** Рекомендуется (опционально для CUDA/ROCm)
-- **Диск:** 20GB+ свободного места (для моделей и вирт окружения)
+### Железо (для Worker'а):
+- **CPU:** Intel/AMD с 1+ ядром (минимум, подойдёт старый компьютер)
+- **RAM:** 2GB+ (достаточно для worker сервера, НЕ для моделей)
+- **GPU:** Не требуется (модели на HOST машине)
+- **Диск:** 500MB свободного места (для кода и логов)
 - **Сеть:** Ethernet или Wi-Fi для подключения к HOST через Tailscale
+
+**NOTE:** Workers работают очень быстро потому что НЕ запускают LLM модели - только пересылают запросы на HOST!
 
 ### ПО:
 - **OS:** Linux (Ubuntu 20.04+), macOS 11+, Windows 10/11
@@ -154,30 +179,39 @@ python -c "from workers.worker import LLMWorkerServer; print('✓ OK')"
 
 ---
 
-## Шаг 3: Установка LLM Backend
+## Шаг 3: Настройка HOST Backend URL
 
-**ВАЖНО:** Worker должен запускать тот же LLM Backend что используется на HOST!
+**ВАЖНО:** Workers НЕ устанавливают свой LLM Backend! Они обращаются к HOST backend'у.
 
-Спросите у администратора HOST:
-- Какой Backend используется? (Ollama или llama.cpp)
-- Какие модели нужны? (qwen-course, deepseek-course, и т.д.)
-- Какие порты использовать?
+Вам нужно узнать у администратора HOST:
+- **HOST Backend URL** (например: `http://100.64.0.1:11434` для Ollama или `http://100.64.0.1:8000` для llama.cpp)
 
-### Вариант A: Ollama
+### Обновите config.py
 
 ```bash
-# Установка
-curl -fsSL https://ollama.ai/install.sh | sh  # Linux
-# или скачайте с https://ollama.ai для macOS/Windows
+# Откройте config.py в редакторе
+nano config.py  # или используйте ваш редактор
 
-# Загрузите модель (спросите у администратора которую)
-ollama pull qwen-course
-# или
-ollama pull deepseek-course
+# Найдите строку:
+# HOST_BACKEND_URL = "http://127.0.0.1:11434"
 
-# Запуск сервера (слушайте на 0.0.0.0 чтобы HOST мог подключиться)
-ollama serve OLLAMA_HOST=0.0.0.0:11434
+# Замените на URL HOST машины:
+HOST_BACKEND_URL = "http://100.64.0.1:11434"  # Замените 100.64.0.1 на IP вашего HOST
 ```
+
+**Примеры:**
+- Ollama на HOST: `http://100.64.0.1:11434`
+- llama.cpp на HOST: `http://100.64.0.1:8000`
+
+Проверьте что URL доступен:
+
+```bash
+# Pingуйте HOST backend
+curl http://100.64.0.1:11434/api/tags  # Ollama
+curl http://100.64.0.1:8000/health     # llama.cpp
+```
+
+---
 
 **Для systemd (автозапуск):**
 
@@ -241,44 +275,57 @@ source venv/bin/activate  # Linux/macOS
 # или
 venv\Scripts\activate      # Windows
 
-# Запустите worker
+# Запустите worker с указанием HOST backend URL
 python -m workers start \
   --name <worker_name> \
   --host 0.0.0.0 \
-  --port <port>
+  --port <port> \
+  --host-backend-url <HOST_BACKEND_URL>
 
-# Пример:
-python -m workers start --name writer_1 --host 0.0.0.0 --port 9501
+# Пример для Ollama:
+python -m workers start --name writer_1 --host 0.0.0.0 --port 9501 --host-backend-url http://100.64.0.1:11434
+
+# Пример для llama.cpp:
+python -m workers start --name critic_1 --host 0.0.0.0 --port 9502 --host-backend-url http://100.64.0.1:8000
 ```
 
 **Параметры:**
 - `--name` — уникальное имя worker'а (например: `writer_1`, `critic_1`)
 - `--host` — **ВСЕГДА** используйте `0.0.0.0` для Tailscale подключения!
 - `--port` — порт для слушания (9501-9510 рекомендуется)
+- `--host-backend-url` — URL HOST backend'а (например: `http://100.64.0.1:11434`)
+
+**Или используйте config.py:**
+Если вы обновили `HOST_BACKEND_URL` в config.py, параметр `--host-backend-url` не требуется:
+
+```bash
+python -m workers start --name writer_1 --host 0.0.0.0 --port 9501
+```
 
 ### Пример запуска
 
 ```bash
-# Writer worker
-python -m workers start --name writer_1 --host 0.0.0.0 --port 9501
+# Writer worker (с явным URL)
+python -m workers start --name writer_1 --host 0.0.0.0 --port 9501 --host-backend-url http://100.64.0.1:11434
 
 # Output:
 # INFO: Initialized LLMWorkerServer: writer_1 at 0.0.0.0:9501
+# INFO: Will route requests to HOST backend: http://100.64.0.1:11434
 # INFO: Worker server listening on 0.0.0.0:9501
 ```
 
-**Оставьте этот процесс работать!** Закройте будет по Ctrl+C в конце.
+**Оставьте этот процесс работать!** Закроется по Ctrl+C в конце.
 
 ### Запуск нескольких Worker'ов на одной машине
 
 ```bash
 # Терминал 1: Writer
-python -m workers start --name writer_1 --host 0.0.0.0 --port 9501
+python -m workers start --name writer_1 --host 0.0.0.0 --port 9501 --host-backend-url http://100.64.0.1:11434
 
 # Терминал 2: Critic
-python -m workers start --name critic_1 --host 0.0.0.0 --port 9502
+python -m workers start --name critic_1 --host 0.0.0.0 --port 9502 --host-backend-url http://100.64.0.1:11434
 
-# Оба должны запуститься независимо
+# Оба должны запуститься независимо и обращаться к HOST backend'у
 ```
 
 ---
@@ -392,42 +439,38 @@ python -m workers start --name writer_1 --host 0.0.0.0 --port 9501
 sudo tailscale status
 ping 100.64.0.1  # Пингуйте HOST (спросите IP)
 
-# 2. Проверьте Backend
-curl http://0.0.0.0:11434/api/tags  # Ollama
-curl http://0.0.0.0:11434/health    # llama.cpp
+# 2. Проверьте доступ к HOST backend
+curl http://100.64.0.1:11434/api/tags  # Ollama на HOST
+curl http://100.64.0.1:8000/health     # llama.cpp на HOST
 
 # 3. Активируйте окружение
 source venv/bin/activate
 
 # 4. Запустите Worker
-python -m workers start --name writer_1 --host 0.0.0.0 --port 9501
+python -m workers start --name writer_1 --host 0.0.0.0 --port 9501 --host-backend-url http://100.64.0.1:11434
 
 # Output должен показать:
 # INFO: Initialized LLMWorkerServer: writer_1 at 0.0.0.0:9501
+# INFO: Will route requests to HOST backend: http://100.64.0.1:11434
 # INFO: Worker server listening on 0.0.0.0:9501
 ```
 
-### Полный цикл на одной машине (для тестирования)
+### Распределённая система (несколько машин)
 
 ```bash
-# Терминал 1: Backend LLM
-ollama serve OLLAMA_HOST=0.0.0.0:11434
-# или
-./llama.cpp/server -m ~/models/qwen-course.gguf -ngl 999 --port 11434 --host 0.0.0.0
+# На каждой WORKER машине:
 
-# Терминал 2: Таскale проверка
-sudo tailscale status
-
-# Терминал 3: Writer Worker
+# Терминал 1: Writer Worker
 source venv/bin/activate
-python -m workers start --name writer_1 --host 0.0.0.0 --port 9501
+python -m workers start --name writer_remote_1 --host 0.0.0.0 --port 9501 --host-backend-url http://100.64.0.1:11434
 
-# Терминал 4: Critic Worker
-source venv/bin/activate
-python -m workers start --name critic_1 --host 0.0.0.0 --port 9502
+# Терминал 2: Critic Worker (на другой машине или в другом терминале)
+python -m workers start --name critic_remote_1 --host 0.0.0.0 --port 9502 --host-backend-url http://100.64.0.1:11434
 
-# Терминал 5: Мониторинг
-tail -f logs/generator.log
+# На HOST машине:
+# - HOST_BACKEND_URL указывает на локальный backend (127.0.0.1:11434)
+# - config.py содержит IP рабочих машин
+# python main.py task.json
 ```
 
 ---
@@ -463,35 +506,36 @@ ping 100.64.0.1
 # Свяжитесь с администратором
 ```
 
-### Backend не запускается
+### Backend не доступен (HOST backend)
 
 ```bash
-# Олламa - проверьте установку
-ollama --version
+# Проверьте HOST backend URL
+# Олламa на HOST:
+ping 100.64.0.1
+curl http://100.64.0.1:11434/api/tags
 
-# llama.cpp - проверьте компиляцию
-./llama.cpp/server --version
+# llama.cpp на HOST:
+curl http://100.64.0.1:8000/health
 
-# Проверьте модели
-ollama list  # Ollama
-ls ~/models/ # llama.cpp
-
-# Если нет модели - скачайте
-ollama pull qwen-course
+# Если не доступен - обновите HOST_BACKEND_URL в config.py
+# Убедитесь что HOST машина включена и backend запущен
+# Свяжитесь с администратором HOST
 ```
 
-### Worker не запускается
+### Worker не подключается к HOST backend
 
 ```bash
-# Проверьте порт - может быть занят
-netstat -tlnp | grep 9501  # Linux
-netstat -ano | findstr 9501 # Windows
+# Проверьте Tailscale
+sudo tailscale status
 
-# Если портзанят - используйте другой порт
-python -m workers start --name writer_2 --host 0.0.0.0 --port 9502
+# Пингуйте HOST
+ping 100.64.0.1
 
-# Проверьте зависимости
-python -c "from workers.worker import LLMWorkerServer; print('OK')"
+# Проверьте HOST_BACKEND_URL в config.py
+cat config.py | grep HOST_BACKEND_URL
+
+# Проверьте параметры запуска worker'а
+python -m workers start --name test --host 0.0.0.0 --port 9999 --host-backend-url http://100.64.0.1:11434
 ```
 
 ### Out of Memory (OOM)
@@ -654,40 +698,42 @@ sudo tailscale logout
 ## Схема подключения Worker → HOST
 
 ```
-┌─────────────────────────┐
-│ WORKER MACHINE          │
-│ (100.64.0.2)            │
-├─────────────────────────┤
-│                         │
-│ ✓ Ollama/llama.cpp      │
-│   (port 11434)          │
-│                         │
-│ ✓ Python venv           │
-│                         │
-│ ✓ Worker processes      │
-│   (ports 9501, 9502...) │
-│   Слушает на 0.0.0.0    │
-│                         │
-└─────────────────────────┘
-           ↓
-    Tailscale VPN
+┌─────────────────────────────────────┐
+│ WORKER MACHINE (100.64.0.2)         │
+├─────────────────────────────────────┤
+│                                     │
+│ ✓ Python venv                       │
+│                                     │
+│ ✓ Worker processes                  │
+│   (ports 9501, 9502...)             │
+│   Слушает на 0.0.0.0                │
+│                                     │
+│ ✗ БЕЗ Ollama/llama.cpp (модели на  │
+│   HOST!)                            │
+│                                     │
+└─────────────────────────────────────┘
+    Tailscale VPN (HTTP запросы)
     (безопасный туннель)
            ↓
-┌─────────────────────────┐
-│ HOST MACHINE            │
-│ (100.64.0.1)            │
-├─────────────────────────┤
-│                         │
-│ ✓ Ollama/llama.cpp      │
-│                         │
-│ ✓ Coordinator           │
-│                         │
-│ ✓ main.py генератор     │
-│   Подключается к:       │
-│   100.64.0.2:9501       │
-│   100.64.0.2:9502       │
-│                         │
-└─────────────────────────┘
+┌─────────────────────────────────────┐
+│ HOST MACHINE (100.64.0.1)           │
+├─────────────────────────────────────┤
+│                                     │
+│ ✓ Ollama/llama.cpp (порт 11434/8000)
+│   (модели только здесь!)           │
+│                                     │
+│ ✓ Coordinator                       │
+│                                     │
+│ ✓ main.py генератор                │
+│   Подключается к:                  │
+│   100.64.0.2:9501 (writer_1)       │
+│   100.64.0.2:9502 (critic_1)       │
+│                                     │
+│ WORKER'ы обращаются к HOST backend: │
+│   http://100.64.0.1:11434           │
+│   http://100.64.0.1:8000            │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ---
@@ -698,16 +744,18 @@ sudo tailscale logout
 # 1. Tailscale подключен
 sudo tailscale status
 
-# 2. Backend работает
-curl http://0.0.0.0:11434/api/tags
+# 2. HOST backend доступен (с WORKER машины)
+curl http://100.64.0.1:11434/api/tags   # Ollama
+curl http://100.64.0.1:8000/health      # llama.cpp
 
-# 3. Worker запущен
+# 3. Worker запущен и подключен к HOST backend
 ps aux | grep "workers start"
 
-# 4. HOST может пингнуть (с HOST машины)
+# 4. HOST может пингнуть worker (с HOST машины)
 ping 100.64.0.2
 
 # ✅ Готово к работе!
+# Workers готовы получать запросы от HOST
 ```
 
 ---

@@ -24,18 +24,21 @@ def setup_logging(level: str = "INFO") -> None:
 
 
 def cmd_start(args: argparse.Namespace) -> None:
-    """Start a worker process."""
+    """Start a worker process that forwards requests to HOST backend."""
     setup_logging()
 
     from .worker import run_worker
 
     logger.info(f"Starting worker: {args.name} on {args.host}:{args.port}")
+    if args.host_backend_url:
+        logger.info(f"Will use HOST backend: {args.host_backend_url}")
 
     asyncio.run(
         run_worker(
             host=args.host,
             port=args.port,
-            worker_name=args.name
+            worker_name=args.name,
+            host_backend_url=args.host_backend_url
         )
     )
 
@@ -179,8 +182,10 @@ Examples:
     # Start command
     start_parser = subparsers.add_parser("start", help="Start a worker process")
     start_parser.add_argument("--name", required=True, help="Worker name")
-    start_parser.add_argument("--host", default="127.0.0.1", help="Worker host")
+    start_parser.add_argument("--host", default="127.0.0.1", help="Worker host (use 0.0.0.0 for remote access)")
     start_parser.add_argument("--port", type=int, required=True, help="Worker port")
+    start_parser.add_argument("--host-backend-url", default=None,
+                            help="HOST backend URL (e.g., http://100.64.0.1:11434). If not provided, uses config.HOST_BACKEND_URL")
     start_parser.set_defaults(func=cmd_start)
 
     # List command

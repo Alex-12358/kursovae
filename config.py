@@ -136,6 +136,14 @@ WORKERS = [
 ]
 WORKER_FALLBACK_TO_LOCAL = True  # Fallback to local backend if workers unavailable
 
+# === HOST BACKEND URL FOR WORKERS (Model Consolidation) ===
+# Workers forward requests to HOST backend (models are stored only on HOST)
+# Format: "http://HOST_IP:PORT" or "http://localhost:PORT"
+# For Ollama: "http://100.64.0.1:11434" or "http://127.0.0.1:11434"
+# For llama.cpp: "http://100.64.0.1:8000" or "http://127.0.0.1:8000"
+HOST_BACKEND_URL = "http://127.0.0.1:11434"  # Default: Ollama on localhost
+# When running on remote machines, change to: "http://100.64.0.1:11434"
+
 # === CHAPTER PARALLELISM ===
 MAX_CONCURRENT_CHAPTERS = 2  # Максимум параллельных глав одновременно
 CHAPTER_VALIDATION_ENABLED = True  # Проверка глав сразу после генерации

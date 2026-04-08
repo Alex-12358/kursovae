@@ -11,10 +11,14 @@
             "id": "70c6ab60c2c52537",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "SMART_CRITIC_V6.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "Новая вкладка"
+              "title": "SMART_CRITIC_V6"
             }
           }
         ]
@@ -90,6 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "SMART_CRITIC_V6.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -99,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Обратные ссылки"
+              "title": "Обратные ссылки для SMART_CRITIC_V6"
             }
           },
           {
@@ -108,11 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "SMART_CRITIC_V6.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Исходящие ссылки"
+              "title": "Исходящие ссылки из SMART_CRITIC_V6"
             }
           },
           {
@@ -150,12 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "SMART_CRITIC_V6.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Структура"
+              "title": "Структура SMART_CRITIC_V6"
             }
           }
         ]
@@ -178,18 +185,23 @@
   },
   "active": "70c6ab60c2c52537",
   "lastOpenFiles": [
-    "test_llm_gateway.py",
-    "test_indexing.py",
-    "test_deepseek.py",
-    "test_calc.py",
+    "workers/tailscale.py",
+    "TAILSCALE_WORKERS.md",
+    "SETUP_GUIDE.md",
+    "ARCHITECTURE.md",
+    "WORKER_DEPLOYMENT.md",
+    "LLAMACPP_SETUP.md",
+    "core/dag.py.tmp.39372.1775659135673",
+    "validation/chapter_validator.py",
+    "workers/cli.py",
+    "workers/coordinator.py",
+    "workers/client.py",
+    "workers/worker.py",
+    "workers/__init__.py",
+    "workers",
+    "llm/backends/llamacpp_backend.py",
+    "llm/backends/load_balancer.py",
     "SMART_CRITIC_V6.md",
-    "requirements.txt",
-    "regenerate_text.py",
-    "rebuild_docx.py",
-    "README.md",
-    "Modelfile.qwen",
-    "Modelfile.deepseek",
-    "main.py",
-    "generate_missing_chapters.py"
+    "README.md"
   ]
 }
