@@ -1,0 +1,10 @@
+{
+  "node_name": "INPUT_VALIDATE",
+  "status": "done",
+  "duration": 0.0003514289855957031,
+  "timestamp": "2026-04-06T23:54:41.049027",
+  "result": {
+    "validation": "ValidationResult(valid=True, errors=[], warnings=[])"
+  },
+  "error": null
+}

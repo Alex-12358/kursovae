@@ -1,0 +1,11 @@
+{
+  "node_name": "SMART_CRITIC",
+  "status": "done",
+  "duration": 0.5716168880462646,
+  "timestamp": "2026-04-07T08:10:23.497461",
+  "result": {
+    "skipped": true,
+    "reason": "no_chapters"
+  },
+  "error": null
+}

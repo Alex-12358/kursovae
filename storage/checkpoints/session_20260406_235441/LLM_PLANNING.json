@@ -1,0 +1,251 @@
+{
+  "node_name": "LLM_PLANNING",
+  "status": "done",
+  "duration": 0.19671368598937988,
+  "timestamp": "2026-04-07T00:57:04.891562",
+  "result": {
+    "plan": {
+      "plan_version": "v5_fixed",
+      "scheme": 8,
+      "chapters": [
+        {
+          "idx": 0,
+          "title": "Введение",
+          "sections": [],
+          "content_type": "LLM_THEORY",
+          "llm_task": "Цели и задачи курсового проекта, описание привода"
+        },
+        {
+          "idx": "1",
+          "title": "Энергетический и кинематический расчеты привода",
+          "type": "calc",
+          "calc_module": "energy_kinematic",
+          "sections": [
+            {
+              "idx": "1.1",
+              "title": "Определение расчетной мощности привода",
+              "content_type": "LLM_THEORY",
+              "calc_vars": [],
+              "notes": ""
+            },
+            {
+              "idx": "1.2",
+              "title": "Выбор электродвигателя",
+              "content_type": "LLM_THEORY",
+              "calc_vars": [],
+              "notes": ""
+            },
+            {
+              "idx": "1.3",
+              "title": "Определение общего передаточного числа привода и разбивка его по отдельным передачам",
+              "content_type": "LLM_THEORY",
+              "calc_vars": [],
+              "notes": ""
+            },
+            {
+              "idx": "1.4",
+              "title": "Определение силовых и кинематических параметров привода",
+              "content_type": "LLM_THEORY",
+              "calc_vars": [],
+              "notes": ""
+            }
+          ]
+        },
+        {
+          "idx": "2",
+          "title": "Расчет червячной передачи редуктора",
+          "type": "calc",
+          "calc_module": "worm_gear",
+          "sections": [
+            {
+              "idx": "2.1",
+              "title": "Выбор материала для изготовления червяка и червячного колеса",
+              "content_type": "LLM_THEORY",
+              "calc_vars": [],
+              "notes": ""
+            },
+            {
+              "idx": "2.2",
+              "title": "Определение допускаемых контактных напряжений при расчете на выносливость",
+              "content_type": "LLM_THEORY",
+              "calc_vars": [],
+              "notes": ""
+            },
+            {
+              "idx": "2.3",
+              "title": "Определение допускаемых контактных напряжений при расчете на контактную прочность при действии максимальной нагрузки",
+              "content_type": "LLM_THEORY",
+              "calc_vars": [],
+              "notes": ""
+            },
+            {
+              "idx": "2.4",
+              "title": "Проектировочный расчет на контактную выносливость",
+              "content_type": "LLM_THEORY",
+              "calc_vars": [],
+              "notes": ""
+            },
+            {
+              "idx": "2.5",
+              "title": "Проверочный расчет на контактную выносливость",
+              "content_type": "LLM_THEORY",
+              "calc_vars": [],
+              "notes": ""
+            },
+            {
+              "idx": "2.6",
+              "title": "Проверочный расчет на контактную прочность при действии максимальной нагрузки",
+              "content_type": "LLM_THEORY",
+              "calc_vars": [],
+              "notes": ""
+            },
+            {
+              "idx": "2.7",
+              "title": "Определение допускаемых напряжений изгиба при расчете на выносливость",
+              "content_type": "LLM_THEORY",
+              "calc_vars": [],
+              "notes": ""
+            },
+            {
+              "idx": "2.8",
+              "title": "Определение допускаемых напряжений при расчете на прочность при изгибе при действии максимальной нагрузкой",
+              "content_type": "LLM_THEORY",
+              "calc_vars": [],
+              "notes": ""
+            },
+            {
+              "idx": "2.9",
+              "title": "Проверочный расчет на выносливость при изгибе",
+              "content_type": "LLM_THEORY",
+              "calc_vars": [],
+              "notes": ""
+            },
+            {
+              "idx": "2.10",
+              "title": "Проверочный расчет на прочность при изгибе максимальной нагрузкой",
+              "content_type": "LLM_THEORY",
+              "calc_vars": [],
+              "notes": ""
+            },
+            {
+              "idx": "2.11",
+              "title": "Геометрические параметры червячной передачи",
+              "content_type": "LLM_THEORY",
+              "calc_vars": [],
+              "notes": ""
+            },
+            {
+              "idx": "2.12",
+              "title": "КПД червячной передачи",
+              "content_type": "LLM_THEORY",
+              "calc_vars": [],
+              "notes": ""
+            }
+          ]
+        },
+        {
+          "idx": "3",
+          "title": "Расчет открытой передачи привода",
+          "type": "calc",
+          "calc_module": "open_drive",
+          "sections": []
+        },
+        {
+          "idx": "4",
+          "title": "Предварительный расчет валов. Выбор муфты",
+          "type": "calc",
+          "calc_module": "shaft_preliminary",
+          "sections": []
+        },
+        {
+          "idx": "5",
+          "title": "Конструктивные размеры элементов червячного колеса, корпуса и крышки редуктора",
+          "type": "calc",
+          "calc_module": "construction_dimensions",
+          "sections": []
+        },
+        {
+          "idx": "6",
+          "title": "Первый этап эскизной компоновки редуктора",
+          "type": "mixed",
+          "calc_module": "",
+          "sections": []
+        },
+        {
+          "idx": "7",
+          "title": "Проверка долговечности подшипников по динамической грузоподъемности",
+          "type": "calc",
+          "calc_module": "bearings",
+          "sections": [
+            {
+              "idx": "7.1",
+              "title": "Определение сил, действующих в червячном зацеплении и на валы",
+              "content_type": "LLM_THEORY",
+              "calc_vars": [],
+              "notes": ""
+            },
+            {
+              "idx": "7.2",
+              "title": "Определение опорных реакций, возникающих в подшипниковых узлах валов и проверка долговечности подшипников",
+              "content_type": "LLM_THEORY",
+              "calc_vars": [],
+              "notes": ""
+            }
+          ]
+        },
+        {
+          "idx": "8",
+          "title": "Второй этап эскизной компоновки редуктора",
+          "type": "mixed",
+          "calc_module": "",
+          "sections": []
+        },
+        {
+          "idx": "9",
+          "title": "Проверка прочности шпоночных соединений",
+          "type": "calc",
+          "calc_module": "keys",
+          "sections": []
+        },
+        {
+          "idx": "10",
+          "title": "Уточненный расчет валов",
+          "type": "calc",
+          "calc_module": "shaft_detailed",
+          "sections": []
+        },
+        {
+          "idx": "11",
+          "title": "Назначение посадок основных деталей редуктора",
+          "type": "mixed",
+          "calc_module": "",
+          "sections": []
+        },
+        {
+          "idx": "12",
+          "title": "Смазка редуктора",
+          "type": "text",
+          "calc_module": "",
+          "sections": []
+        },
+        {
+          "idx": "13",
+          "title": "Тепловой расчет червячного редуктора",
+          "type": "calc",
+          "calc_module": "thermal_calc",
+          "sections": []
+        },
+        {
+          "idx": "14",
+          "title": "Сборка редуктора",
+          "type": "text",
+          "calc_module": "",
+          "sections": []
+        }
+      ],
+      "total_chapters": 15
+    },
+    "chapters_count": 15
+  },
+  "error": null
+}

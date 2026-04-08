@@ -1,0 +1,10 @@
+{
+  "node_name": "DOCX_BUILDER",
+  "status": "done",
+  "duration": 0.23911786079406738,
+  "timestamp": "2026-04-07T08:10:22.366664",
+  "result": {
+    "docx_path": "G:\\ARTIC\\course-generator-v5\\output\\coursework.docx"
+  },
+  "error": null
+}

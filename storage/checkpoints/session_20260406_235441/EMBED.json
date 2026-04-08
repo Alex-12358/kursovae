@@ -1,0 +1,12 @@
+{
+  "node_name": "EMBED",
+  "status": "done",
+  "duration": 3028.8104486465454,
+  "timestamp": "2026-04-07T00:46:40.212646",
+  "result": {
+    "embeddings_created": true,
+    "vectors_count": 8225,
+    "dimension": 1024
+  },
+  "error": null
+}

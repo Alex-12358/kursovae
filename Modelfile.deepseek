@@ -1,0 +1,17 @@
+FROM G:\ARTIC\models\DeepSeek-R1-Distill-Qwen-32B-q4_k_m.gguf
+PARAMETER num_gpu 10
+PARAMETER num_thread 10
+PARAMETER num_ctx 4096
+PARAMETER temperature 0.2
+PARAMETER repeat_penalty 1.1
+PARAMETER top_p 0.9
+PARAMETER num_predict 2048
+
+TEMPLATE """{{- if .System }}<|im_start|>system
+{{ .System }}<|im_end|>
+{{ end }}{{- range .Messages }}<|im_start|>{{ .Role }}
+{{ .Content }}<|im_end|>
+{{ end }}<|im_start|>assistant
+"""
+
+SYSTEM "Ты помощник. Отвечай прямо, без размышлений вслух."

@@ -1,0 +1,252 @@
+{
+  "variant": 2,
+  "scheme": 8,
+  "student": {
+    "name": "Сумак Давид Юрьевич",
+    "group": "АТ-21"
+  },
+  "university": "ГГТУ им. П.О. Сухого",
+  "department": "Механика",
+  "discipline": "Детали машин",
+  "topic": "Разработать конструкцию привода для конвейера (транспортера)",
+  "deadline": "2026-05-29",
+  "issue_date": "2026-02-24",
+
+  "power": 2.5,
+  "rpm_input": 1450,
+  "rpm_output": 50,
+  "gear_ratio": 29.0,
+  "service_life": 14400,
+  "load_type": "variable",
+  "material_pinion": "Сталь40Х",
+  "material_gear": "БрА9Ж3Л",
+  "hardness_pinion": 280,
+  "hardness_gear": 180,
+
+  "parameters": {
+    "P_output_kW": 2.5,
+    "n_output_rpm": 50,
+    "service_life_years": 6,
+    "Lh_hours": 14400,
+    "K_day": 0.8,
+    "K_year": 0.75
+  },
+
+  "drive_layout": {
+    "type": "worm_reducer_with_open_drive",
+    "elements": [
+      {"position": 1, "type": "motor", "description": "Электродвигатель (М)"},
+      {"position": 2, "type": "coupling", "description": "Муфта"},
+      {"position": 3, "type": "worm_gear", "description": "Червячная передача (редуктор)"},
+      {"position": 4, "type": "housing", "description": "Корпус редуктора"},
+      {"position": 5, "type": "open_drive", "description": "Открытая передача (цепная)"},
+      {"position": 6, "type": "output", "description": "Рабочий орган (звёздочка/конвейер)"}
+    ],
+    "reducer_type": "worm_single_stage",
+    "open_drive_type": "chain"
+  },
+
+  "loading_mode": {
+    "type": "variable",
+    "cycle": [
+      {"load_factor": 1.5, "time_fraction": 0.004},
+      {"load_factor": 1.0, "time_fraction": 0.5},
+      {"load_factor": 0.5, "time_fraction": 0.496}
+    ]
+  },
+
+  "materials": {
+    "worm": {"grade": "Сталь 40Х", "hardness_HRC": 45},
+    "worm_wheel": {"grade": "БрА9Ж3Л", "type": "bronze"}
+  },
+
+  "table_of_contents": {
+    "intro": {
+      "title": "Введение",
+      "type": "text",
+      "llm_task": "Цели и задачи курсового проекта, описание привода"
+    },
+    "chapters": [
+      {
+        "number": "1",
+        "title": "Энергетический и кинематический расчеты привода",
+        "type": "calc",
+        "calc_module": "energy_kinematic",
+        "subsections": [
+          {"number": "1.1", "title": "Определение расчетной мощности привода"},
+          {"number": "1.2", "title": "Выбор электродвигателя"},
+          {"number": "1.3", "title": "Определение общего передаточного числа привода и разбивка его по отдельным передачам"},
+          {"number": "1.4", "title": "Определение силовых и кинематических параметров привода"}
+        ]
+      },
+      {
+        "number": "2",
+        "title": "Расчет червячной передачи редуктора",
+        "type": "calc",
+        "calc_module": "worm_gear",
+        "subsections": [
+          {"number": "2.1", "title": "Выбор материала для изготовления червяка и червячного колеса"},
+          {"number": "2.2", "title": "Определение допускаемых контактных напряжений при расчете на выносливость"},
+          {"number": "2.3", "title": "Определение допускаемых контактных напряжений при расчете на контактную прочность при действии максимальной нагрузки"},
+          {"number": "2.4", "title": "Проектировочный расчет на контактную выносливость"},
+          {"number": "2.5", "title": "Проверочный расчет на контактную выносливость"},
+          {"number": "2.6", "title": "Проверочный расчет на контактную прочность при действии максимальной нагрузки"},
+          {"number": "2.7", "title": "Определение допускаемых напряжений изгиба при расчете на выносливость"},
+          {"number": "2.8", "title": "Определение допускаемых напряжений при расчете на прочность при изгибе при действии максимальной нагрузкой"},
+          {"number": "2.9", "title": "Проверочный расчет на выносливость при изгибе"},
+          {"number": "2.10", "title": "Проверочный расчет на прочность при изгибе максимальной нагрузкой"},
+          {"number": "2.11", "title": "Геометрические параметры червячной передачи"},
+          {"number": "2.12", "title": "КПД червячной передачи"}
+        ]
+      },
+      {
+        "number": "3",
+        "title": "Расчет открытой передачи привода",
+        "type": "calc",
+        "calc_module": "open_drive",
+        "description": "Расчет цепной передачи от редуктора к рабочему органу"
+      },
+      {
+        "number": "4",
+        "title": "Предварительный расчет валов. Выбор муфты",
+        "type": "calc",
+        "calc_module": "shaft_preliminary"
+      },
+      {
+        "number": "5",
+        "title": "Конструктивные размеры элементов червячного колеса, корпуса и крышки редуктора",
+        "type": "calc",
+        "calc_module": "construction_dimensions"
+      },
+      {
+        "number": "6",
+        "title": "Первый этап эскизной компоновки редуктора",
+        "type": "mixed",
+        "description": "Эскиз на миллиметровке М1:1 + описание"
+      },
+      {
+        "number": "7",
+        "title": "Проверка долговечности подшипников по динамической грузоподъемности",
+        "type": "calc",
+        "calc_module": "bearings",
+        "subsections": [
+          {"number": "7.1", "title": "Определение сил, действующих в червячном зацеплении и на валы"},
+          {"number": "7.2", "title": "Определение опорных реакций, возникающих в подшипниковых узлах валов и проверка долговечности подшипников"}
+        ]
+      },
+      {
+        "number": "8",
+        "title": "Второй этап эскизной компоновки редуктора",
+        "type": "mixed",
+        "description": "Уточнённая компоновка с подшипниками"
+      },
+      {
+        "number": "9",
+        "title": "Проверка прочности шпоночных соединений",
+        "type": "calc",
+        "calc_module": "keys"
+      },
+      {
+        "number": "10",
+        "title": "Уточненный расчет валов",
+        "type": "calc",
+        "calc_module": "shaft_detailed"
+      },
+      {
+        "number": "11",
+        "title": "Назначение посадок основных деталей редуктора",
+        "type": "mixed",
+        "description": "Таблица посадок по ГОСТ"
+      },
+      {
+        "number": "12",
+        "title": "Смазка редуктора",
+        "type": "text",
+        "llm_task": "Описание системы смазки, выбор масла"
+      },
+      {
+        "number": "13",
+        "title": "Тепловой расчет червячного редуктора",
+        "type": "calc",
+        "calc_module": "thermal_calc"
+      },
+      {
+        "number": "14",
+        "title": "Сборка редуктора",
+        "type": "text",
+        "llm_task": "Порядок сборки-разборки редуктора"
+      }
+    ],
+    "outro": {
+      "title": "Литература",
+      "type": "bibliography",
+      "format": "ГОСТ 7.0.5-2008"
+    }
+  },
+
+  "drawings": [
+    {
+      "number": 1,
+      "title": "Эскизная компоновка редуктора",
+      "format": "миллиметровка",
+      "scale": "М1:1",
+      "module": "sketch_layout"
+    },
+    {
+      "number": 2,
+      "title": "Чертеж общего вида привода",
+      "format": "A1",
+      "material": "ватман",
+      "module": "general_view"
+    },
+    {
+      "number": 3,
+      "title": "Сборочный чертеж редуктора",
+      "format": "A1",
+      "material": "ватман",
+      "module": "assembly_drawing"
+    },
+    {
+      "number": 4,
+      "title": "Рабочий чертеж вала",
+      "format": "A3",
+      "material": "ватман",
+      "module": "shaft_drawing"
+    },
+    {
+      "number": 5,
+      "title": "Рабочий чертеж зубчатого колеса",
+      "format": "A3",
+      "material": "ватман",
+      "module": "gear_drawing"
+    },
+    {
+      "number": 6,
+      "title": "Рабочий чертеж червячного колеса",
+      "format": "A3",
+      "material": "ватман",
+      "module": "worm_wheel_drawing"
+    },
+    {
+      "number": 7,
+      "title": "Рабочий чертеж крышки подшипника",
+      "format": "A4",
+      "material": "ватман",
+      "module": "bearing_cover_drawing"
+    }
+  ],
+
+  "required_outputs": [
+    "energy_kinematic_calc",
+    "worm_gear_calc",
+    "open_chain_drive_calc",
+    "shaft_calc",
+    "bearing_calc",
+    "key_calc",
+    "coupling_calc",
+    "assembly_drawing",
+    "shaft_drawing",
+    "worm_wheel_drawing",
+    "coursework_document"
+  ]
+}

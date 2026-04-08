@@ -1,0 +1,11 @@
+{
+  "node_name": "FEM_LITE",
+  "status": "done",
+  "duration": 0.0002067089080810547,
+  "timestamp": "2026-04-07T00:56:03.586760",
+  "result": {
+    "fem_ok": true,
+    "stress_check": "passed"
+  },
+  "error": null
+}

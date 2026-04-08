@@ -1,0 +1,11 @@
+{
+  "node_name": "GLOBAL_CONSISTENCY",
+  "status": "done",
+  "duration": 0.0001556873321533203,
+  "timestamp": "2026-04-07T08:10:22.375151",
+  "result": {
+    "consistency_ok": true,
+    "issues": []
+  },
+  "error": null
+}

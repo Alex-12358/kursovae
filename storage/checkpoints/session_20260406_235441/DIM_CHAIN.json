@@ -1,0 +1,62 @@
+{
+  "node_name": "DIM_CHAIN",
+  "status": "done",
+  "duration": 0.00029468536376953125,
+  "timestamp": "2026-04-07T00:56:03.588590",
+  "result": {
+    "dim_chain": {
+      "shaft_name": "main_shaft",
+      "total_length": 248.5,
+      "section_count": 6,
+      "sections": [
+        {
+          "name": "coupling_seat",
+          "length": 66,
+          "diameter": 10,
+          "tolerance": 0.0
+        },
+        {
+          "name": "transition_1",
+          "length": 20,
+          "diameter": 10,
+          "tolerance": 0.0
+        },
+        {
+          "name": "bearing_1",
+          "length": 14,
+          "diameter": 10,
+          "tolerance": 0.0
+        },
+        {
+          "name": "gear_seat",
+          "length": 104.5,
+          "diameter": 10,
+          "tolerance": 0.0
+        },
+        {
+          "name": "bearing_2",
+          "length": 14,
+          "diameter": 10,
+          "tolerance": 0.0
+        },
+        {
+          "name": "end_section",
+          "length": 30,
+          "diameter": 10,
+          "tolerance": 0.0
+        }
+      ],
+      "validation": {
+        "valid": true,
+        "errors": [],
+        "warnings": [
+          "Все участки вала имеют одинаковый диаметр"
+        ],
+        "total_length": 248.5,
+        "section_count": 6
+      }
+    },
+    "validated": true
+  },
+  "error": null
+}

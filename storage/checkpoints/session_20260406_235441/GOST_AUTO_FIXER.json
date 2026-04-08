@@ -1,0 +1,18 @@
+{
+  "node_name": "GOST_AUTO_FIXER",
+  "status": "done",
+  "duration": 0.2859511375427246,
+  "timestamp": "2026-04-07T08:10:22.924046",
+  "result": {
+    "fixed": true,
+    "fixes": {
+      "margins": 1,
+      "font": 95,
+      "line_spacing": 80,
+      "paragraph_indent": 80,
+      "alignment": 95,
+      "heading_dot": 0
+    }
+  },
+  "error": null
+}

@@ -1,0 +1,10 @@
+{
+  "node_name": "TOC_BUILDER",
+  "status": "done",
+  "duration": 0.00016689300537109375,
+  "timestamp": "2026-04-07T08:10:22.373467",
+  "result": {
+    "toc_ready": true
+  },
+  "error": null
+}

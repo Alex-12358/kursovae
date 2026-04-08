@@ -1,0 +1,11 @@
+{
+  "node_name": "REF_ANALYZER",
+  "status": "done",
+  "duration": 0.00020742416381835938,
+  "timestamp": "2026-04-07T00:56:03.584912",
+  "result": {
+    "ref_data": {},
+    "selected_standards": []
+  },
+  "error": null
+}

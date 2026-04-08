@@ -1,0 +1,12 @@
+{
+  "node_name": "FINAL_OUTPUT",
+  "status": "done",
+  "duration": 0.00023508071899414062,
+  "timestamp": "2026-04-07T08:10:23.499553",
+  "result": {
+    "docx": "G:\\ARTIC\\course-generator-v5\\output\\coursework.docx",
+    "drawings": {},
+    "status": "completed"
+  },
+  "error": null
+}

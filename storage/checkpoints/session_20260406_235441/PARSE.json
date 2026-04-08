@@ -1,0 +1,30 @@
+{
+  "node_name": "PARSE",
+  "status": "done",
+  "duration": 0.0001163482666015625,
+  "timestamp": "2026-04-06T23:54:41.050762",
+  "result": {
+    "parsed": {
+      "scheme": 8,
+      "parameters": {
+        "P_output_kW": 2.5,
+        "n_output_rpm": 50,
+        "service_life_years": 6,
+        "Lh_hours": 14400,
+        "K_day": 0.8,
+        "K_year": 0.75
+      },
+      "materials": {
+        "worm": {
+          "grade": "Сталь 40Х",
+          "hardness_HRC": 45
+        },
+        "worm_wheel": {
+          "grade": "БрА9Ж3Л",
+          "type": "bronze"
+        }
+      }
+    }
+  },
+  "error": null
+}

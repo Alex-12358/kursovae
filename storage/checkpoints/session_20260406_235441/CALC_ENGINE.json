@@ -1,0 +1,304 @@
+{
+  "node_name": "CALC_ENGINE",
+  "status": "done",
+  "duration": 0.02292037010192871,
+  "timestamp": "2026-04-07T00:56:03.582383",
+  "result": {
+    "calculated_params": {
+      "gear": {
+        "m": 1.25,
+        "z1": 17,
+        "z2": 477,
+        "a_w": 315,
+        "b_w": 94.5,
+        "d1": 21.72,
+        "d2": 609.57,
+        "beta": 12,
+        "sigma_h": 353.8,
+        "sigma_f1": 65.8,
+        "sigma_f2": 2.2,
+        "safety_h": 1.23,
+        "safety_f": 7.66,
+        "trace": {
+          "T1": 16.47,
+          "T2": 477.5,
+          "n2": 50.0,
+          "sigma_hp": 435.6,
+          "a_w_prelim": 282.24,
+          "m_prelim": 1.208,
+          "z_sum": 493.0,
+          "materials": {
+            "pinion": "Сталь40Х",
+            "gear": "БрА9Ж3Л"
+          },
+          "hardness": {
+            "pinion": 280,
+            "gear": 180
+          }
+        }
+      },
+      "shaft": {
+        "d_gear_seat": 10,
+        "d_bearing_seat": 10,
+        "d_coupling_seat": 10,
+        "d_end": 10,
+        "d_wheel_seat": 10,
+        "material": "Сталь40Х",
+        "tau_actual": 0.0,
+        "tau_allow": 35,
+        "safety_factor": 999,
+        "trace": {
+          "method": "simplified_torque_based",
+          "T1": 0,
+          "T2": 0,
+          "tau_allow": 35,
+          "d_gear_min": 10.0,
+          "d_wheel_min": 10.0,
+          "W_p": 196.3,
+          "tau_actual": 0.0,
+          "safety_factor": 999,
+          "status": "calculated"
+        }
+      },
+      "bearings": {
+        "designation": "6204",
+        "d": 20,
+        "D": 47,
+        "B": 14,
+        "C": 13.8,
+        "C0": 7.8,
+        "type": "radial_ball",
+        "C_required": 0.0,
+        "actual_life_hours": 999999,
+        "safety_factor": null,
+        "trace": {
+          "radial_load": 0.0,
+          "rpm": 1450,
+          "life_hours_required": 14400,
+          "life_hours_actual": 999999,
+          "status": "selected"
+        }
+      },
+      "keys": {
+        "key_gear": {
+          "b": 2,
+          "h": 2,
+          "L": 75,
+          "L_work": 73,
+          "t1": 1.2,
+          "t2": 1.0,
+          "material": "Сталь45",
+          "sigma_cm": 0.0,
+          "sigma_cm_allow": 100,
+          "tau_sr": 0.0,
+          "tau_sr_allow": 60,
+          "safety_factor_cm": 999,
+          "safety_factor_sr": 999,
+          "is_valid": true,
+          "trace": {
+            "d": 10,
+            "T": 0,
+            "b_x_h": "2x2",
+            "sigma_cm": 0.0,
+            "tau_sr": 0.0,
+            "status": "passed"
+          }
+        },
+        "key_coupling": {
+          "b": 2,
+          "h": 2,
+          "L": 45,
+          "L_work": 43,
+          "t1": 1.2,
+          "t2": 1.0,
+          "material": "Сталь45",
+          "sigma_cm": 0.0,
+          "sigma_cm_allow": 100,
+          "tau_sr": 0.0,
+          "tau_sr_allow": 60,
+          "safety_factor_cm": 999,
+          "safety_factor_sr": 999,
+          "is_valid": true,
+          "trace": {
+            "d": 10,
+            "T": 0,
+            "b_x_h": "2x2",
+            "sigma_cm": 0.0,
+            "tau_sr": 0.0,
+            "status": "passed"
+          }
+        }
+      },
+      "coupling": {
+        "designation": "МУВП-1",
+        "T_nom": 6.3,
+        "d_min": 9,
+        "d_max": 16,
+        "D": 50,
+        "L": 66,
+        "mass": 0.5,
+        "K": 1.3,
+        "T_calc": 0.0,
+        "safety_factor": null,
+        "trace": {
+          "T": 0,
+          "T_calc": 0.0,
+          "K": 1.3,
+          "coupling_type": "МУВП",
+          "status": "selected"
+        }
+      },
+      "dim_chain": [
+        {
+          "name": "coupling_seat",
+          "length": 66,
+          "diameter": 10,
+          "tolerance": 0.0,
+          "position": 0.0,
+          "position_end": 66.0
+        },
+        {
+          "name": "transition_1",
+          "length": 20,
+          "diameter": 10,
+          "tolerance": 0.0,
+          "position": 66.0,
+          "position_end": 86.0
+        },
+        {
+          "name": "bearing_1",
+          "length": 14,
+          "diameter": 10,
+          "tolerance": 0.0,
+          "position": 86.0,
+          "position_end": 100.0
+        },
+        {
+          "name": "gear_seat",
+          "length": 104.5,
+          "diameter": 10,
+          "tolerance": 0.0,
+          "position": 100.0,
+          "position_end": 204.5
+        },
+        {
+          "name": "bearing_2",
+          "length": 14,
+          "diameter": 10,
+          "tolerance": 0.0,
+          "position": 204.5,
+          "position_end": 218.5
+        },
+        {
+          "name": "end_section",
+          "length": 30,
+          "diameter": 10,
+          "tolerance": 0.0,
+          "position": 218.5,
+          "position_end": 248.5
+        }
+      ]
+    },
+    "calc_trace": {
+      "gear": {
+        "T1": 16.47,
+        "T2": 477.5,
+        "n2": 50.0,
+        "sigma_hp": 435.6,
+        "a_w_prelim": 282.24,
+        "m_prelim": 1.208,
+        "z_sum": 493.0,
+        "materials": {
+          "pinion": "Сталь40Х",
+          "gear": "БрА9Ж3Л"
+        },
+        "hardness": {
+          "pinion": 280,
+          "gear": 180
+        }
+      },
+      "shaft": {
+        "method": "simplified_torque_based",
+        "T1": 0,
+        "T2": 0,
+        "tau_allow": 35,
+        "d_gear_min": 10.0,
+        "d_wheel_min": 10.0,
+        "W_p": 196.3,
+        "tau_actual": 0.0,
+        "safety_factor": 999,
+        "status": "calculated"
+      },
+      "bearings": {
+        "radial_load": 0.0,
+        "rpm": 1450,
+        "life_hours_required": 14400,
+        "life_hours_actual": 999999,
+        "status": "selected"
+      },
+      "keys": {
+        "status": "calculated"
+      },
+      "coupling": {
+        "T": 0,
+        "T_calc": 0.0,
+        "K": 1.3,
+        "coupling_type": "МУВП",
+        "status": "selected"
+      },
+      "dim_chain": {
+        "shaft_name": "main_shaft",
+        "total_length": 248.5,
+        "section_count": 6,
+        "sections": [
+          {
+            "name": "coupling_seat",
+            "length": 66,
+            "diameter": 10,
+            "tolerance": 0.0
+          },
+          {
+            "name": "transition_1",
+            "length": 20,
+            "diameter": 10,
+            "tolerance": 0.0
+          },
+          {
+            "name": "bearing_1",
+            "length": 14,
+            "diameter": 10,
+            "tolerance": 0.0
+          },
+          {
+            "name": "gear_seat",
+            "length": 104.5,
+            "diameter": 10,
+            "tolerance": 0.0
+          },
+          {
+            "name": "bearing_2",
+            "length": 14,
+            "diameter": 10,
+            "tolerance": 0.0
+          },
+          {
+            "name": "end_section",
+            "length": 30,
+            "diameter": 10,
+            "tolerance": 0.0
+          }
+        ],
+        "validation": {
+          "valid": true,
+          "errors": [],
+          "warnings": [
+            "Все участки вала имеют одинаковый диаметр"
+          ],
+          "total_length": 248.5,
+          "section_count": 6
+        }
+      }
+    }
+  },
+  "error": null
+}
